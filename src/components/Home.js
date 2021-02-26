@@ -1,7 +1,6 @@
 import React from 'react';
 import Route, { useHistory } from 'react-router-dom';
 
-
 function Home(props) {
 
   const history = useHistory();

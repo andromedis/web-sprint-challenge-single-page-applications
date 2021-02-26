@@ -24,7 +24,6 @@ const App = () => {
       <header>
         <h1>Lambda Eats</h1>
       </header>
-      {/* header */}
       <Route exact path='/'>
         <Home />
       </Route>
