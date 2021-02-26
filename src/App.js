@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route } from 'react-router-dom';
+import axios from 'axios';
 
 import Home from './components/Home';
 import PizzaForm from './components/PizzaForm';
 
 const App = () => {
+  const [orders, setOrders] = useState([]);
+
+  const postOrder = newOrder => {
+    axios.post('https://reqres.in/api/users', newOrder)
+      .then(res => {
+        debugger;
+        console.log(res)
+        setOrders([res.data, ...orders])
+      })
+      .catch(err => {
+        debugger;
+        console.log(err);
+      })
+  }
+
   return (
     <div className='App'>
       <header>
@@ -15,7 +31,7 @@ const App = () => {
         <Home />
       </Route>
       <Route path='/pizza'>
-        <PizzaForm />
+        <PizzaForm postOrder={postOrder}/>
       </Route>
     </div>
   );

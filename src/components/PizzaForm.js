@@ -31,6 +31,7 @@ const initialFormErrors = {
 }
 
 function PizzaForm(props) {
+  const { postOrder } = props;
   const [values, setValues] = useState(initialFormValues);
   const [errors, setErrors] = useState(initialFormErrors);
 
@@ -49,7 +50,21 @@ function PizzaForm(props) {
   }
 
   const onSubmit = evt => {
-
+    evt.preventDefault();
+    const newOrder = {
+      name: values.name.trim(),
+      size: values.size,
+      sauce: values.sauce,
+      pepperoni: values.pepperoni,
+      sausage: values.sausage,
+      olives: values.olives,
+      onions: values.onions,
+      peppers: values.peppers,
+      broccoli: values.broccoli,
+      special: values.special.trim(),
+    }
+    postOrder(newOrder);
+    setValues(initialFormValues);
   }
 
   return (
