@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Route from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -21,24 +21,19 @@ const initialFormErrors = {
   name: '',
   size: '',
   sauce: '',
-  pepperoni: '',
-  sausage: '',
-  olives: '',
-  onions: '',
-  peppers: '',
-  broccoli: '',
-  special: '',
 }
 
 function PizzaForm(props) {
   const { postOrder } = props;
   const [values, setValues] = useState(initialFormValues);
   const [errors, setErrors] = useState(initialFormErrors);
+  const [disabled, setDisabled] = useState(true);
 
   const onChange = evt => {
     const { type, name, value, checked } = evt.target;
     const valueToUse = ( type === 'checkbox' ) ? checked : value;
-    yup.reach(schema, name)
+    if (name === 'name' || name === 'size' || name === 'sauce') {
+      yup.reach(schema, name)
       .validate(valueToUse)
       .then(() => {
         setErrors({...errors, [name]: ''});
@@ -46,6 +41,7 @@ function PizzaForm(props) {
       .catch(err => {
         setErrors({...errors, [name]: err.errors[0]})
       });
+    }
     setValues({...values, [name]: valueToUse});
   }
 
@@ -67,6 +63,13 @@ function PizzaForm(props) {
     setValues(initialFormValues);
   }
 
+  useEffect(() => {
+    schema.isValid(values)
+      .then(valid => {
+        setDisabled(!valid)
+      })
+  }, [values])
+
   return (
     <form onSubmit={onSubmit}>
       <h2>Build Your Own Pizza</h2>
@@ -74,7 +77,7 @@ function PizzaForm(props) {
       <div className='input'>
         <div className='input-header'>
           <h3><label htmlFor='customer-name' >Name</label></h3>
-          <p>Required</p>
+          <p>Required {errors.name}</p>
         </div>
         <div className='input-options'>
           <input 
@@ -90,7 +93,7 @@ function PizzaForm(props) {
       <div className='input'>
         <div className='input-header'>
           <h3><label htmlFor='size' >Choice of Size</label></h3>
-          <p>Required</p>
+          <p>Required {errors.size}</p>
         </div>
         <div className='input-options'>
           <select 
@@ -99,7 +102,7 @@ function PizzaForm(props) {
             value={values.size}
             onChange={onChange}
           >
-            <option value=''>-- Select an option --</option>
+            <option value='' selected disabled>-- Select an option --</option>
             <option value='Small - 8"'>Small - 8"</option>
             <option value='Medium - 12"'>Medium - 12"</option>
             <option value='Large - 16"'>Large - 16"</option>
@@ -110,7 +113,7 @@ function PizzaForm(props) {
       <div className='input'>
         <div className='input-header'>
           <h3>Choice of Sauce</h3>
-          <p>Required</p>
+          <p>Required {errors.sauce}</p>
         </div>
         <div className='input-options'>
 
@@ -216,7 +219,7 @@ function PizzaForm(props) {
         </div>
       </div>
 
-      <button>Add to Order</button>
+      <button disabled={disabled}>Add to Order</button>
 
     </form>
   );

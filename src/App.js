@@ -11,12 +11,10 @@ const App = () => {
   const postOrder = newOrder => {
     axios.post('https://reqres.in/api/users', newOrder)
       .then(res => {
-        debugger;
         console.log(res)
         setOrders([res.data, ...orders])
       })
       .catch(err => {
-        debugger;
         console.log(err);
       })
   }
